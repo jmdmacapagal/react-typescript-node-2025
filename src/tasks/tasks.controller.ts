@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { injectable, inject } from "inversify";
 import { UserController } from "../user/user.controller";
 import { Task } from "./tasks.schema";
-import { ITask } from "./tasks.interface";
+import { ITask, IPartialTaskWithId } from "./tasks.interface";
 import { Document } from "mongoose";
 
 @injectable()
@@ -26,10 +26,26 @@ export class TasksController {
     return task;
   }
 
-  public handlePatchTasks() {
-    return {
-      title: "New Task",
-      description: "Task description",
-    };
+  public async handlePatchTasks(
+    request: Request<{}, {}, IPartialTaskWithId>,
+    response: Response
+  ) {
+    const task = await Task.findById(request.body._id);
+
+    if (task) {
+      task.title = request.body.title ? request.body.title : task.title;
+      task.description = request.body.description
+        ? request.body.description
+        : task.description;
+      task.status = request.body.status ? request.body.status : task.status;
+      task.priority = request.body.priority
+        ? request.body.priority
+        : task.priority;
+      task.dueDate = request.body.dueDate ? request.body.dueDate : task.dueDate;
+
+      await task.save();
+    }
+
+    return task;
   }
 }
