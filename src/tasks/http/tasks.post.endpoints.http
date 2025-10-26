@@ -1,0 +1,10 @@
+POST http://localhost:3001/tasks/create
+Content-Type: application/json
+
+{
+    "title": "New Task",
+    "description": "This is a new task created via API",
+    "status": "pending",
+    "priority": "normal",
+    "dueDate": "2024-12-31T23:59:59.000Z"
+}
