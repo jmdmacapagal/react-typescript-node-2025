@@ -1,6 +1,10 @@
 import { Router, Request, Response } from "express";
-import { TasksController } from "./tasks.controller";
+
 import { injectable, inject } from "inversify";
+import { StatusCodes } from "http-status-codes";
+
+import { TasksController } from "./tasks.controller";
+
 import { IPartialTaskWithId, ITask } from "./tasks.interface";
 
 import { createTaskValidator } from "./validators/createTask.validator";
@@ -47,10 +51,10 @@ export class TasksRouter {
             request,
             response
           );
-
+          response.status(StatusCodes.CREATED);
           response.json(newTask);
         } else {
-          response.status(400);
+          response.status(StatusCodes.BAD_REQUEST);
           response.json({ errors: result.array() });
         }
       }
